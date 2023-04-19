@@ -2,6 +2,7 @@ version: "3.9"
 services:
   opa:
     image: openpolicyagent/opa:0.51.0
+    container_name: self-service-opa
     restart: unless-stopped
     command: run --server --log-level debug
     volumes:
@@ -11,14 +12,17 @@ services:
 
   self-service-api:
     image: self-service-api:latest
+    container_name: opa-self-service-api
     restart: unless-stopped
     build: ./src
     ports:
-      - 8000:8000
+      - 8097:8000
 
   portal-server:
+    platform: "linux/amd64"
     image: registry.souvap-univention.de/souvap/tooling/images/univention-portal/portal-server:latest
     container_name: univention-portal-server
+    env_file: .env
     ports:
       - 8095:80
     environment:
@@ -39,6 +43,7 @@ services:
 
   database:
     image: postgres:12.13-alpine
+    container_name: notifications-api-database
     environment:
       POSTGRES_PASSWORD: "devpassword"
       POSTGRES_USER: "dev"
@@ -61,6 +66,14 @@ services:
       ROOT_PATH: "/univention/portal/notifications-api"
     ports:
       - 8096:8080
+
+  reverse-proxy:
+    build:
+      context: ./nginx
+    container_name: univention-portal-dev-reverse-proxy
+    env_file: .env
+    ports:
+      - "${PROXY_PORT}:80"
 
 volumes:
   postgresql-data:

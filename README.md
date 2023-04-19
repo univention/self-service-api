@@ -7,7 +7,7 @@ self-service API with [OPA](https://www.openpolicyagent.org/).
 
 As a first approach, the following architecture has been sketched:
 
-[!architecture]("docs/concept/images/architecture.png")
+![architecture]("docs/concept/images/architecture.png")
 
 The idea behind it is to implement OPA in a self-contained way, that does not
 affect the front-end (given a configured reverse proxy). As a result, there

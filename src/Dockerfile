@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy the requirements file into the container and install dependencies
 COPY requirements.txt requirements.txt
-RUN pip install --extra-index-url https://git.knut.univention.de/api/v4/projects/688/packages/pypi/simple -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy the rest of the application code into the container
 COPY . .

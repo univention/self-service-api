@@ -77,4 +77,3 @@ input input {
     http_method: string
     path: [string]
 }
-

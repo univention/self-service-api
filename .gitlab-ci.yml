@@ -1,0 +1,14 @@
+stages:
+  - lint
+
+pre-commit:
+  stage: lint
+  image:
+    name: "gitregistry.knut.univention.de/univention/customers/dataport/upx/container-pre-commit/upx-pre-commit:latest"
+    entrypoint: [""]
+  variables:
+    PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
+    PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
+  script:
+    - git config --global --add safe.directory /builds/univention/customers/dataport/upx/pocs/self-service-api
+    - pre-commit run --all-files

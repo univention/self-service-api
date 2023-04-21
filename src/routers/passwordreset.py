@@ -31,8 +31,11 @@ router = APIRouter(
 async def get_user_attributes_values(request: Request, response: Response):
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} if request.headers.get(
-        "x-xsrf-protection") else {}
+    headers = {key: request.headers[key]
+               for key in ['accept-language', 'x-requested-with', 'x-xsrf-protection']}
+    token = request.headers.get('authorization').split('Bearer ')[-1]
+    if token:
+        logger.info('Got token: %s', token)
 
     async with aiohttp.ClientSession(cookies=cookies) as session:
         url = urljoin(ucs_selfservice_prefix,
@@ -55,9 +58,11 @@ async def get_user_attributes_values(request: Request, response: Response):
 async def get_user_attributes_descriptions(request: Request, response: Response) -> Any:
     payload = await request.json()
     cookies = request.cookies
-    cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} if request.headers.get(
-        "x-xsrf-protection") else {}
+    headers = {key: request.headers[key]
+               for key in ['accept-language', 'x-requested-with', 'x-xsrf-protection']}
+    token = request.headers.get('authorization').split('Bearer ')[-1]
+    if token:
+        logger.info('Got token: %s', token)
 
     async with aiohttp.ClientSession(cookies=cookies) as session:
         url = urljoin(ucs_selfservice_prefix,

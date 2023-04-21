@@ -47,7 +47,7 @@ services:
       - 8095:80
     environment:
       PORTAL_SERVER_ADMIN_GROUP: "cn=Domain Admins,cn=groups,dc=univention,dc=test"
-      PORTAL_SERVER_AUTH_MODE: "ucs"
+      PORTAL_SERVER_AUTH_MODE: "saml"
       PORTAL_SERVER_EDITABLE: "true"
       PORTAL_SERVER_PORT: "80"
       PORTAL_SERVER_UCS_INTERNAL_URL: "http://172.17.0.1:8000/univention/internal"
@@ -86,6 +86,24 @@ services:
       ROOT_PATH: "/univention/portal/notifications-api"
     ports:
       - 8096:8080
+
+  keycloak:
+    container_name: keycloak
+    build:
+      context: ./keycloak
+    ports:
+      - 8097:8080
+    environment:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "univention"
+      PROXY_ADDRESS_FORWARDING: "true"
+      KC_PROXY: "edge"
+      KEYCLOAK_LOGLEVEL: "ALL"
+      ROOT_LOGLEVEL: "ALL"
+      # override the following values in .env
+      LDAP_BASE: "dc=univention,dc=intranet"
+      LDAP_SECRET: "YOUR CONTENT OF /etc/idp-ldap-user.secret"
+      LDAP_SERVER: "ldap://UCS_IP:7389"
 
   reverse-proxy:
     build:

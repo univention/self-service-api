@@ -27,8 +27,11 @@ async def get_user_attributes_values(
         request: Request, response: Response, opa_client: Any = Depends(get_opa)):
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
-        if request.headers.get("x-xsrf-protection") else {}
+    headers = {key: request.headers[key]
+               for key in ['accept-language', 'x-requested-with', 'x-xsrf-protection']}
+    token = request.headers.get('authorization').split('Bearer ')[-1]
+    if token:
+        logger.info('Got token: %s', token)
 
     logger.debug("Request to get_user_attributes_values")
 
@@ -60,8 +63,11 @@ async def get_user_attributes_descriptions(
         opa_client: Any = Depends(get_opa)) -> Any:
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
-        if request.headers.get("x-xsrf-protection") else {}
+    headers = {key: request.headers[key]
+               for key in ['accept-language', 'x-requested-with', 'x-xsrf-protection']}
+    token = request.headers.get('authorization').split('Bearer ')[-1]
+    if token:
+        logger.info('Got token: %s', token)
 
     logger.debug("Request to get_user_attributes_descriptions")
 

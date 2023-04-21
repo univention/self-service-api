@@ -15,7 +15,14 @@ To get started, follow this steps:
    ```
 2. Configure your `.env` file based upon `.env.example`.
     1. If you are using Mac, please change the local IPs to `host.docker.internal`.
-3. Use `docker compose up -d --build` to bring the setup up.
+3. Please refer to the documentation of the univention-portal for details
+   on how to prepare your UCS for use with Keycloak.
+   a. Apply the Ansible scripts from the portal.
+   b. Copy the certificate to `./keycloak/ucs-root-ca.crt`.
+   c. Fill your LDAP settings
+      in your `docker-compose.override.yaml`
+      based on ``docker-compose.override.yaml.example`.
+4. Use `docker compose up -d --build` to bring the setup up.
 
 ## pre-commit
 

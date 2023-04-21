@@ -1,4 +1,8 @@
 **/__pycache__
 .env
+<<<<<<< HEAD
 /docker-compose.override.yaml
 /helm/values-*.yaml
+=======
+docker-compose.override.yaml
+>>>>>>> 195328d (feat(keycloak): recycle keycloak configuration from the portal)

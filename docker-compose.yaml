@@ -15,8 +15,15 @@ services:
     container_name: opa-self-service-api
     restart: unless-stopped
     build: ./src
+    command: [ '--reload' ]
+    volumes:
+      - type: bind
+        source: ./src
+        target: /app
     ports:
-      - 8097:8000
+      - 8098:8000
+    environment:
+      UCS_BASE_URL: "${UCS_BASE_URL}"
 
   portal-server:
     platform: "linux/amd64"
@@ -75,5 +82,25 @@ services:
     ports:
       - "${PROXY_PORT}:80"
 
+  # Environment of the pre-commit hook linter
+  pre-commit:
+    profiles:
+      - test
+    image: gitregistry.knut.univention.de/univention/customers/dataport/upx/container-pre-commit/upx-pre-commit:latest
+    container_name: self-service-api-pre-commit
+    environment:
+      PIP_CACHE_DIR: /cache/pip
+      PRE_COMMIT_HOME: /cache/pre-commit
+    working_dir: /work
+    volumes:
+      - type: bind
+        source: .
+        target: /work
+      - type: volume
+        # speed up pre-commit by caching dependencies
+        source: pre-commit-cache
+        target: /cache
+
 volumes:
   postgresql-data:
+  pre-commit-cache:

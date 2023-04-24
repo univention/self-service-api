@@ -1,10 +1,17 @@
+import logging
+
 from fastapi import FastAPI
+import uvicorn.config
 
 from routers import passwordreset
 
 
-app = FastAPI()
+logging.basicConfig(
+    format="%(levelprefix)s %(message)s",
+    level=logging.DEBUG
+)
 
+app = FastAPI()
 app.include_router(passwordreset.router)
 
 

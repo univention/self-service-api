@@ -5,7 +5,7 @@ self-service API with [OPA](https://www.openpolicyagent.org/).
 
 ## Local development
 
-This repository uses and is strongly based on all the containers resulting 
+This repository uses and is strongly based on all the containers resulting
 from [`univention-portal`](https://git.knut.univention.de/univention/components/univention-portal).
 
 To get started, follow this steps:
@@ -13,6 +13,10 @@ To get started, follow this steps:
     1. If you are using Mac, please change the local IPs to `host.docker.internal`.
 2. Use `docker compose up -d --build` to bring the setup up.
 
+# pre-commit
+
+This repository makes use of [`pre-commit`](https://pre-commit.com/), please ensure you install them.
+They are also checked on the pipeline.
 
 ## Architecture
 

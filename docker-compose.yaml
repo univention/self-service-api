@@ -5,11 +5,21 @@ services:
     image: openpolicyagent/opa:0.51.0
     container_name: self-service-opa
     restart: unless-stopped
-    command: run --server --log-level debug --set=decision_logs.console=true /policies/self_service.rego
+    command: run --server --log-level debug --format pretty --watch /bundles
     volumes:
-      - ./opa/policies:/policies
+      - ./opa:/bundles
     ports:
       - 8181:8181
+
+  opa-test:
+    profiles:
+      - test
+    image: openpolicyagent/opa:0.51.0
+    container_name: self-service-opa
+    restart: unless-stopped
+    command: test --format pretty /bundles
+    volumes:
+      - ./opa:/bundles
 
   self-service-api:
     image: self-service-api:latest

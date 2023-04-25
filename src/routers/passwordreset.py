@@ -59,12 +59,10 @@ async def get_user_attributes_descriptions(request: Request, response: Response)
             for key, value in ucs_response.cookies.items():
                 response.set_cookie(key, value)
 
-            opa_client.check_policy(policy="/")
-            for attribute in body.get("result", {}):
-                # TODO: let OPA make the decision...
-
-                attribute["editable"] = False
-                attribute["readonly"] = True
+            res = await opa_client.check_policy(
+                policy="/policies/self_service",
+                data=body.get("result", {}))
+            print(res)
 
             return body
 

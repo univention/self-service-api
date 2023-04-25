@@ -91,11 +91,11 @@ services:
     environment:
       PIP_CACHE_DIR: /cache/pip
       PRE_COMMIT_HOME: /cache/pre-commit
-    working_dir: /work
+    working_dir: /code
     volumes:
       - type: bind
         source: .
-        target: /work
+        target: /code
       - type: volume
         # speed up pre-commit by caching dependencies
         source: pre-commit-cache

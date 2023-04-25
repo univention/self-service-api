@@ -24,6 +24,7 @@ services:
       - 8098:8000
     environment:
       UCS_BASE_URL: "${UCS_BASE_URL}"
+      OPA_HOST: "opa"
 
   portal-server:
     platform: "linux/amd64"

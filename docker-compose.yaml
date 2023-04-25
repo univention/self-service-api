@@ -4,7 +4,7 @@ services:
     image: openpolicyagent/opa:0.51.0
     container_name: self-service-opa
     restart: unless-stopped
-    command: run --server --log-level debug
+    command: run --server --log-level debug --set=decision_logs.console=true /policies/self_service.rego
     volumes:
       - ./opa/policies:/policies
     ports:
@@ -24,7 +24,7 @@ services:
       - 8098:8000
     environment:
       UCS_BASE_URL: "${UCS_BASE_URL}"
-      OPA_HOST: "opa"
+      OPA_URL: "${OPA_URL}"
 
   portal-server:
     platform: "linux/amd64"

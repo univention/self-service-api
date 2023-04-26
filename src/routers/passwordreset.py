@@ -44,9 +44,9 @@ async def get_user_attributes_values(request: Request, response: Response):
                 response.set_cookie(key, value)
 
             res = await opa_client.check_policy(
-                policy="/v1/data/self_service",
+                policy="/v1/data/self_service/filters/user_data_attribute_values",
                 data=body.get("result", {}))
-            print(res)
+            body["result"] = res
 
             return body
 
@@ -69,9 +69,9 @@ async def get_user_attributes_descriptions(request: Request, response: Response)
                 response.set_cookie(key, value)
 
             res = await opa_client.check_policy(
-                policy="/v1/data/self_service",
+                policy="/v1/data/self_service/filters/user_data_attribute_descriptions",
                 data=body.get("result", {}))
-            print(res)
+            body["result"] = res
 
             return body
 

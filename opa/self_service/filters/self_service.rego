@@ -41,6 +41,13 @@ user_data_attribute_values[key] := value if {
 }
 
 
+user_data_attribute_descriptions contains field if {
+    some field in input
+    some writeable_key in writeable_keys
+    field.id == writeable_key
+}
+
+
 # Define the structure of the user data
 # This should be provided by the calling API
 # user_attribute_values {

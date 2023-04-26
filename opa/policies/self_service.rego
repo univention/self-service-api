@@ -12,7 +12,7 @@ allow {
 
 # Define the structure of the user data
 # This should be provided by the calling API
-# user_data {
+# user_attribute_values {
 #     jpegPhoto: string
 #     "e-mail": [string]
 #     phone:[string]
@@ -22,3 +22,32 @@ allow {
 #     mobileTelephoneNumber: [string]
 #     homePostalAddress:[[string]]
 # }
+
+# Define the structure of the user available fields
+# This should be provided by the calling API
+# user_attribute_descriptions {[{
+#     id:string
+#     label: string
+#     description: string
+#     syntax: string
+#     size: string
+#     required: bool
+#     editable: bool
+#     readonly: bool
+#     multivalue: bool
+#     type: string
+#     staticValues: [{
+#         id: string
+#         label: string
+#     }]
+#     subtypes: [{
+#         type: string
+#         dynamicValues: []
+#         dynamicValuesInfo: []
+#         dynamicOptions: []
+#         staticValues: []
+#         size: string
+#         label: string
+#         depends: []
+#     }]
+# }]}

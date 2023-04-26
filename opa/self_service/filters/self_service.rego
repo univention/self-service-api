@@ -1,12 +1,29 @@
-package self_service
+package self_service.filters
 
-# Define a default deny policy for all requests
-default allow = false
+import future.keywords.contains
+import future.keywords.every
+import future.keywords.if
+import future.keywords.in
 
-# Allow users get their attributes
-allow {
-    # input["e-mail"] != null
-    input[0].editable = true
+import data.mappings.self_service.config.accessible_keys
+
+user_data_attribute_values[filtered] {
+    # filtered := {k: x[k]}
+    # filtered := {
+    #   "jpegPhoto": x["jpegPhoto"],
+    #   "e-mail": x["e-mail"],
+    #   "phone": x["phone"],
+    #   "departmentNumber": x["departmentNumber"],
+    #   "country": x["country"],
+    #   "homeTelephoneNumber": x["homeTelephoneNumber"],
+    #   "mobileTelephoneNumber": x["mobileTelephoneNumber"],
+    #   "homePostalAddress": x["homePostalAddress"]
+    # }
+    # filtered := accessible_keys
+    filtered := { k:v |
+        k = accessible_keys[i]
+        v := input[k]
+    }
 }
 
 

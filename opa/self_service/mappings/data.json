@@ -1,6 +1,6 @@
 {
   "config": {
-    "accessible_keys": [
+    "writeable_keys": [
       "jpegPhoto",
       "e-mail",
       "phone",

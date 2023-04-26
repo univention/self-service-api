@@ -41,6 +41,12 @@ async def get_user_attributes_values(request: Request, response: Response):
             response.status_code = ucs_response.status
             for key, value in ucs_response.cookies.items():
                 response.set_cookie(key, value)
+
+            res = await opa_client.check_policy(
+                policy="/v1/data/self_service",
+                data=body.get("result", {}))
+            print(res)
+
             return body
 
 
@@ -81,5 +87,4 @@ async def get_user_attributes_descriptions(request: Request, response: Response,
             response.status_code = ucs_response.status
             for key, value in ucs_response.cookies.items():
                 response.set_cookie(key, value)
-
             return body

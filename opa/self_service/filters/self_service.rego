@@ -5,6 +5,7 @@ import future.keywords.every
 import future.keywords.if
 import future.keywords.in
 
+<<<<<<< HEAD
 import data.self_service.mappings.config.readable_keys
 import data.self_service.mappings.config.writeable_keys
 
@@ -13,6 +14,41 @@ user_data_attribute_values[key] := value if {
 	value := input[key]
 	some writeable_key in writeable_keys
 	key == writeable_key
+=======
+import data.self_service.mappings.config.writeable_keys
+
+
+# Checks if a key is in the list of writeable keys.
+#
+# `input`: a string, e.g. "phone"
+# returns: true/false
+default allow_write := false
+allow_write := true if {
+    some key in writeable_keys
+    key == input
+}
+
+
+# Filters the given list of keys for writeable keys.
+#
+# `input`: a list of keys, e.g. ["phone", "fax"]
+# returns: a filtered list of keys, e.g. ["phone"]
+allow_writes contains key if {
+    some key in input
+    some writeable_key in writeable_keys
+    key == writeable_key
+}
+
+# Filter the given map for writeable keys.
+#
+# `input`: a dictionary, e.g. {"phone": "1234567", "country": "NL"}
+# returns: a filtered dictionary, containing only the keys which are writable
+user_data_attribute_values[key] := value if {
+    some key
+    value := input[key]
+    some writeable_key in writeable_keys
+    key == writeable_key
+>>>>>>> 7186d3e (fixup! feat(opa): implement policy, add policy tests, use fastapi dependency injection)
 }
 
 user_data_attribute_values[key] := value if {

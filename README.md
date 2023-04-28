@@ -23,6 +23,11 @@ To get started, follow this steps:
       in your `docker-compose.override.yaml`
       based on ``docker-compose.override.yaml.example`.
 4. Use `docker compose up -d --build` to bring the setup up.
+5. Fetch Keycloak's key set and escape all `"`, e.g. like this:
+   ```sh
+   echo `curl "http://localhost:8097/realms/ucs/protocol/openid-connect/certs" | sed -re 's/"/\\"/g'`
+   ```
+   Store the output in the `opa/auth/data.json` file in the `jwks` key.
 
 ## pre-commit
 

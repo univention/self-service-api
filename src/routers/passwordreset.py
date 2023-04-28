@@ -29,9 +29,19 @@ async def get_user_attributes_values(
     cookies = request.cookies
     headers = {key: request.headers[key]
                for key in ['accept-language', 'x-requested-with', 'x-xsrf-protection']}
+
     token = request.headers.get('authorization').split('Bearer ')[-1]
     if token:
-        logger.info('Got token: %s', token)
+        valid = await opa_client.check_policy_true(
+            policy="/v1/data/auth/token/token_valid",
+            data={"token": token, "aud": "notifications-api"}
+        )
+        claims = await opa_client.check_policy(
+            policy="/v1/data/auth/token/decode_valid_token",
+            data={"token": token, "aud": "notifications-api"}
+        )
+        logger.info('Got %s token', 'valid' if valid else 'invalid')
+        logger.info('Token claims: %s', claims)
 
     logger.debug("Request to get_user_attributes_values")
 

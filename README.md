@@ -29,6 +29,13 @@ To get started, follow this steps:
    ```
    Store the output in the `opa/auth/data.json` file in the `jwks` key.
 
+## Test OPA policies
+
+You can run the tests defined in `opa/**/*_test.rego` files as follows:
+```sh
+docker compose run --rm opa-test
+```
+
 ## pre-commit
 
 This repository makes use of [`pre-commit`](https://pre-commit.com/),

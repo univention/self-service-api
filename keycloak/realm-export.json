@@ -837,7 +837,7 @@
         },
         {
           "id": "4c489816-8ff4-4161-9cf8-2f6143a74238",
-          "name": "audience",
+          "name": "audience-notifications-api",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
@@ -846,6 +846,20 @@
             "id.token.claim": "false",
             "access.token.claim": "true",
             "included.custom.audience": "notifications-api",
+            "userinfo.token.claim": "false"
+          }
+        },
+        {
+          "id": "b1f94d94-38eb-483e-9878-b6b226c56296",
+          "name": "audience-self-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "self-service",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "self-service",
             "userinfo.token.claim": "false"
           }
         }
@@ -1474,6 +1488,31 @@
             "id.token.claim": "false",
             "access.token.claim": "true",
             "included.custom.audience": "notifications-api",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "id": "7f6615ba-1f65-4589-8ce0-0580c15eb5c1",
+      "name": "self-service",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "id": "f5a70f79-f7e3-4237-b4f2-0066fb321578",
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "self-service",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "self-service",
             "userinfo.token.claim": "false"
           }
         }

@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   opa:
+    platform: "linux/amd64"
     image: openpolicyagent/opa:0.51.0
     container_name: self-service-opa
     restart: unless-stopped

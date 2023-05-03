@@ -1,6 +1,18 @@
+
+variables:
+  SOUVAP_API_V4_URL: https://gitlab.souvap-univention.de/api/v4
+  SOUVAP_DOCKER_ACCESS_USER: gitlab-ci-knut
+  SOUVAP_HELM_ACCESS_USER: gitlab-ci-knut
+  SOUVAP_HELM_PROJECT_ID: 107
+  SOUVAP_REGISTRY_HOST: registry.souvap-univention.de
+  SOUVAP_REGISTRY_PATH: souvap/tooling/images/self-service-api
+  SOUVAP_REGISTRY_REPO: ${SOUVAP_REGISTRY_HOST}/${SOUVAP_REGISTRY_PATH}
+
+
 stages:
   - lint
   - build
+  - publish
 
 
 # TODO: The workflow setup is duplicated from the univention-portal. Aim for a
@@ -102,6 +114,16 @@ build-self-service-api:
     - if: $CI_COMMIT_BRANCH
 
 
+push-image-souvap-self-service-api:
+  stage: publish
+  needs:
+    - job: build-self-service-api
+  extends: .push-image-souvap
+  variables:
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-api"
+    SOUVAP_IMAGE_NAME: "self-service-api"
+
+
 build-self-service-opa:
   stage: build
   extends: .kaniko
@@ -112,3 +134,13 @@ build-self-service-opa:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH
+
+
+push-image-souvap-self-service-opa:
+  stage: publish
+  needs:
+    - job: build-self-service-opa
+  extends: .push-image-souvap
+  variables:
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-opa"
+    SOUVAP_IMAGE_NAME: "self-service-opa"

@@ -21,6 +21,9 @@ services:
     command: test --format pretty --verbose /bundles
     volumes:
       - ./opa:/bundles
+    environment:
+      KEYCLOAK_BASE_URL: "${KEYCLOAK_BASE_URL}"
+      KEYCLOAK_REALM: "ucs"
 
   self-service-api:
     image: self-service-api:latest

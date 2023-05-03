@@ -1,0 +1,39 @@
+---
+
+# Deployment-specific values for the `example` environment for self-service-api.
+# This is a YAML-formatted file.
+# Include the file with the `--values` parameter
+
+
+## Application-specific
+self_service_api:
+  environment: "staging"
+  ucs_base_url: "http://ucs-machine"
+
+
+## Kubernetes ingress
+ingress:
+  enabled: false
+  host: "self-service-api.example.develop.souvap-univention.de"
+
+
+## Istio based
+istio:
+  enabled: true
+  host: "self-service-api.example.develop.souvap-univention.de"
+
+
+## Docker image
+image:
+  tag: "branch-feature-example"
+
+
+## Container deployment probes
+probes:
+  liveness:
+    enabled: false
+
+  readiness:
+    enabled: false
+
+...

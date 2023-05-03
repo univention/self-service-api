@@ -17,17 +17,16 @@ To get started, follow this steps:
     1. If you are using Mac, please change the local IPs to `host.docker.internal`.
 3. Please refer to the documentation of the univention-portal for details
    on how to prepare your UCS for use with Keycloak.
-   a. Apply the Ansible scripts from the portal.
-   b. Copy the certificate to `./keycloak/ucs-root-ca.crt`.
-   c. Fill your LDAP settings
+   1. Apply the Ansible scripts from the portal.
+   2. Copy the certificate to `./keycloak/ucs-root-ca.crt`.
+   3. Fill your LDAP settings
       in your `docker-compose.override.yaml`
       based on ``docker-compose.override.yaml.example`.
 4. Use `docker compose up -d --build` to bring the setup up.
-5. Fetch Keycloak's key set and escape all `"`, e.g. like this:
+5. Fetch Keycloak's key set and store it in `data.json`:
    ```sh
-   echo `curl "http://localhost:8097/realms/ucs/protocol/openid-connect/certs" | sed -re 's/"/\\"/g'`
+   ./fetch-jwks.sh > opa/auth/data.json
    ```
-   Store the output in the `opa/auth/data.json` file in the `jwks` key.
 
 ## Test OPA policies
 

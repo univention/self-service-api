@@ -1,0 +1,38 @@
+---
+
+# Dummy values for running the Helm linter on the self-service-opa.
+# Run it like this: helm lint -f values.yaml -f linter_values.yaml .
+
+
+## Application-specific
+self_service_opa:
+  log_level: "debug"
+
+
+## Kubernetes ingress
+ingress:
+  enabled: false
+  host: "self-service-opa.example.develop.souvap-univention.de"
+
+
+## Istio based
+istio:
+  enabled: true
+  host: "self-service-opa.example.develop.souvap-univention.de"
+
+
+## Docker image
+image:
+  tag: "branch-feature-example"
+
+
+## Container deployment probes
+probes:
+  liveness:
+    enabled: false
+
+  readiness:
+    enabled: false
+
+...
+

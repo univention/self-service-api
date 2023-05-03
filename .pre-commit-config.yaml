@@ -1,16 +1,4 @@
 repos:
-  - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: 8e87b31
-    hooks:
-      - id: autopep8
-        name: autopep8
-        description: Check that python code style follows pep8
-        language: python
-        types:
-          - python
-        args:
-          - -i
-        require_serial: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: b0f11fe
     hooks:
@@ -33,25 +21,72 @@ repos:
         entry: check-executables-have-shebangs
         language: python
         types: [text, executable]
-  # - repo: https://github.com/norwoodj/helm-docs
-  #   rev: 7717a24
-  #   hooks:
-  #     - id: helm-docs
-  #       args: []
-  #       description: Uses 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
-  #       entry: git-hook/helm-docs
-  #       files: (README\.md\.gotmpl|(Chart|requirements|values)\.yaml)$
-  #       language: script
-  #       name: Helm Docs
-  #       require_serial: true
-  #     - id: helm-docs-built
-  #       args: []
-  #       description: Uses auto built 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
-  #       entry: helm-docs
-  #       files: (README\.md\.gotmpl|(Chart|requirements|values)\.yaml)$
-  #       language: golang
-  #       name: Helm Docs Built
-  #       require_serial: true
+
+  # "Commit messages"
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v2.2.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    #rev: 'v0.0.246'
+    rev: 'v0.0.264'
+    hooks:
+      - id: ruff
+      - id: ruff
+        alias: "ruff-fix"
+        stages: [ manual ]
+        args: ["--fix"]
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v2.0.2
+    hooks:
+      - id: autopep8
+        args: ["-d"]
+      - id: autopep8
+        alias: "autopep8-fix"
+        stages: [ manual ]
+        args: ["-i"]
+
+  # "docker-compose.yaml linter"
+  - repo: https://gitlab.com/univention/pre-commit-hooks/docker-compose-check
+    rev: 7702a8801a158b8595569dd29e2dd655d8a08310
+    hooks:
+    - id: docker-compose-check
+
+  # "Dockerfile linter"
+  - repo: https://gitlab.com/univention/pre-commit-hooks/docker-pre-commit
+    rev: v2.0.0
+    hooks:
+    - id: hadolint-system
+
+  # "Helm chart linter"
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.21
+    hooks:
+    - id: helmlint
+
+  # "Helm docs linter"
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: v1.11.0
+    hooks:
+      - id: helm-docs
+        args: []
+        description: Uses 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
+        entry: git-hook/helm-docs
+        files: (README\.md\.gotmpl|(Chart|requirements|values)\.yaml)$
+        language: script
+        name: Helm Docs
+        require_serial: true
+      - id: helm-docs-built
+        args: []
+        description: Uses auto built 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
+        entry: helm-docs
+        files: (README\.md\.gotmpl|(Chart|requirements|values)\.yaml)$
+        language: golang
+        name: Helm Docs Built
+        require_serial: true
+
   # - repo: https://github.com/Lucas-C/pre-commit-hooks
   #   rev: v1.5.1
   #   hooks:

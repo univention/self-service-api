@@ -11,6 +11,7 @@ repos:
         name: fix end of files
         description: Ensures that a file is either empty, or ends with one newline.
         entry: end-of-file-fixer
+        exclude: ^helm/.+/README.md
       - id: trailing-whitespace
         name: trim trailing whitespace
         description: Trims trailing whitespace.
@@ -62,7 +63,7 @@ repos:
 
   # "Helm chart linter"
   - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.21
+    rev: v0.1.20
     hooks:
     - id: helmlint
 
@@ -71,7 +72,9 @@ repos:
     rev: v1.11.0
     hooks:
       - id: helm-docs
-        args: []
+        args:
+          # Make the tool search for charts only under the `helm` directory
+          - --chart-search-root=helm
         description: Uses 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
         entry: git-hook/helm-docs
         files: (README\.md\.gotmpl|(Chart|requirements|values)\.yaml)$
@@ -79,7 +82,9 @@ repos:
         name: Helm Docs
         require_serial: true
       - id: helm-docs-built
-        args: []
+        args:
+          # Make the tool search for charts only under the `helm` directory
+          - --chart-search-root=helm
         description: Uses auto built 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
         entry: helm-docs
         files: (README\.md\.gotmpl|(Chart|requirements|values)\.yaml)$

@@ -1,0 +1,34 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.description" . }}
+
+- **Version**: {{ template "chart.version" . }}
+- **Type**: {{ template "chart.type" . }}
+- **AppVersion**: {{ template "chart.appVersion" . }}
+- {{ template "chart.homepageLine" . }}
+
+## Introduction
+
+This chart does install the self-service API.
+
+The self-service API is a fully stateless component, no special handling of persistent
+volumes or similar is needed.
+
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+
+## Installing
+
+TODO: complete once the repos on gitlab.souvap-univention.de are ready!
+
+## Uninstalling
+
+TODO: complete once the repos on gitlab.souvap-univention.de are ready!
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSectionHtml" . }}

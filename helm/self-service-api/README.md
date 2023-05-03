@@ -1,46 +1,352 @@
 # self-service-api
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
-
 Proof-of-Concept for the integration of the portal self-service API with OPA
+
+- **Version**: 0.1.0
+- **Type**: application
+- **AppVersion**: 0.0.1
+-
+
+## Introduction
+
+This chart does install the self-service API.
+
+The self-service API is a fully stateless component, no special handling of persistent
+volumes or similar is needed.
+
+## Installing
+
+TODO: complete once the repos on gitlab.souvap-univention.de are ready!
+
+## Uninstalling
+
+TODO: complete once the repos on gitlab.souvap-univention.de are ready!
 
 ## Values
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| affinity | object | `{}` |  |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| fullnameOverride | string | `""` |  |
-| image.imagePullPolicy | string | `"Always"` |  |
-| image.registry | string | `"registry.souvap-univention.de"` |  |
-| image.repository | string | `"souvap/tooling/images/self-service-api/self-service-api"` |  |
-| image.tag | string | `"latest"` |  |
-| imagePullSecrets | list | `[]` |  |
-| ingress.annotations | object | `{}` |  |
-| ingress.className | string | `"nginx"` |  |
-| ingress.enabled | bool | `false` |  |
-| ingress.host | string | `"portal.example"` |  |
-| ingress.paths[0].path | string | `"/univention/command/passwordreset/(.*)"` |  |
-| ingress.paths[0].pathType | string | `"Prefix"` |  |
-| ingress.tls.enabled | bool | `true` |  |
-| ingress.tls.secretName | string | `""` |  |
-| nameOverride | string | `""` |  |
-| nodeSelector | object | `{}` |  |
-| podAnnotations | object | `{}` |  |
-| podSecurityContext | object | `{}` |  |
-| replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
-| securityContext | object | `{}` |  |
-| self_service_api.environment | string | `"staging"` |  |
-| self_service_api.opa_url | string | `"http://self-service-opa"` |  |
-| self_service_api.ucs_base_url | string | `"http://univention-corporate-server"` |  |
-| service.port | int | `80` |  |
-| service.type | string | `"ClusterIP"` |  |
-| serviceAccount.annotations | object | `{}` |  |
-| serviceAccount.create | bool | `true` |  |
-| serviceAccount.name | string | `""` |  |
-| tolerations | list | `[]` |  |
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>affinity</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>autoscaling.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>autoscaling.maxReplicas</td>
+			<td>int</td>
+			<td><pre lang="json">
+100
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>autoscaling.minReplicas</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>autoscaling.targetCPUUtilizationPercentage</td>
+			<td>int</td>
+			<td><pre lang="json">
+80
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>fullnameOverride</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>image.imagePullPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Always"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>image.registry</td>
+			<td>string</td>
+			<td><pre lang="json">
+"registry.souvap-univention.de"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>image.repository</td>
+			<td>string</td>
+			<td><pre lang="json">
+"souvap/tooling/images/self-service-api/self-service-api"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>image.tag</td>
+			<td>string</td>
+			<td><pre lang="json">
+"latest"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>imagePullSecrets</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.annotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.className</td>
+			<td>string</td>
+			<td><pre lang="json">
+"nginx"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.host</td>
+			<td>string</td>
+			<td><pre lang="json">
+"portal.example"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.paths[0].path</td>
+			<td>string</td>
+			<td><pre lang="json">
+"/univention/command/passwordreset/(.*)"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.paths[0].pathType</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Prefix"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.tls.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ingress.tls.secretName</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>nameOverride</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>nodeSelector</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>podAnnotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>podSecurityContext</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>replicaCount</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>resources</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>securityContext</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>self_service_api.environment</td>
+			<td>string</td>
+			<td><pre lang="json">
+"staging"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>self_service_api.opa_url</td>
+			<td>string</td>
+			<td><pre lang="json">
+"http://self-service-opa"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>self_service_api.ucs_base_url</td>
+			<td>string</td>
+			<td><pre lang="json">
+"http://univention-corporate-server"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>service.port</td>
+			<td>int</td>
+			<td><pre lang="json">
+80
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>service.type</td>
+			<td>string</td>
+			<td><pre lang="json">
+"ClusterIP"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>serviceAccount.annotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>serviceAccount.create</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>serviceAccount.name</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>tolerations</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
 

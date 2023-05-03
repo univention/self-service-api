@@ -1,0 +1,13 @@
+
+# May be useful for debugging purposes via "kubectl debug", running as root allows to
+# See the filesystem from the debugging container.
+#
+# securityContext:
+#   runAsUser: 0
+
+## Using a local or custom image
+image:
+  repository: local/self-service-opa
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"

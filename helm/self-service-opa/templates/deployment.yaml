@@ -32,7 +32,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          args: ["run", "--server", "--log-level", "{{ .Values.self_service_opa.log_level }}"]
+          args: ["run", "--server", "--log-level", "{{ .Values.self_service_opa.log_level }}", "--format", "pretty", "--watch", "/bundles"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

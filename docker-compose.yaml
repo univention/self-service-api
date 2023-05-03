@@ -2,8 +2,9 @@ version: "3.9"
 services:
   opa:
     platform: "linux/amd64"
-    image: openpolicyagent/opa:0.51.0
+    image: self-service-opa:latest
     container_name: self-service-opa
+    build: ./opa
     restart: unless-stopped
     command: run --server --log-level debug --format pretty --watch /bundles
     volumes:

@@ -31,7 +31,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}{{ if .Values.image.sha256 }}@sha256:{{ .Values.image.sha256 }}{{ else }}:{{ .Values.image.tag }}{{ end }}"
           args: ["run", "--server", "--log-level", "{{ .Values.self_service_opa.log_level }}", "--format", "pretty", "--watch", "/bundles"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

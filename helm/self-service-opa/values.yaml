@@ -9,10 +9,10 @@ self_service_opa:
 replicaCount: 1
 
 image:
-  repository: openpolicyagent/opa
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  registry: "registry.souvap-univention.de"
+  repository: "souvap/tooling/images/self-service-api/self-service-opa"
+  imagePullPolicy: "Always"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""

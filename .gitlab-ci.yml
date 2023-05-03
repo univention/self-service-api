@@ -1,8 +1,81 @@
 stages:
   - lint
+  - build
+
+
+# TODO: The workflow setup is duplicated from the univention-portal. Aim for a
+# commons repository and inherit these things.
+
+# This workflow rule prevents duplicate pipelines when pushing to branches that
+# already have a merge request open. Our integration branch "develop" is an
+# explicit exception and shall always trigger.
+#
+# The rules are applied in order, the first matching one decides.
+#
+# Compare https://docs.gitlab.com/ee/ci/yaml/#rules
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+
+include:
+  - project: univention/dist/docker-services
+    file: kaniko.yml
+
+
+# TODO: Duplication with univention-portal repository. Provide in a common
+# repository, so that this can be used from various microservices.
+.push-image-souvap:
+  variables:
+    GIT_STRATEGY: none
+  image: artifacts.knut.univention.de/dockerhub_proxy_cache/library/docker:20.10.12
+  services:
+  - name: docker-registry.knut.univention.de/ucs/docker:dind
+    alias: docker
+  before_script:
+    # derived from the .kaniko_pre to define the IMAGE_TAG and IMAGE_VERSION
+    - |-
+      if [ "${CI_COMMIT_REF_NAME:-}" = "${CI_DEFAULT_BRANCH:-}" ]; then
+        VERSION="latest"
+      elif [ -n "${CI_COMMIT_TAG:-}" ]; then
+        NOSLASH=$(echo "${CI_COMMIT_TAG:-}" | tr -s / -)
+        SANITIZED="${NOSLASH//[^a-zA-Z0-9\-\.]/}"
+        VERSION="$SANITIZED"
+      else
+        NOSLASH=$(echo "${CI_COMMIT_REF_NAME:-}" | tr -s / -)
+        SANITIZED="${NOSLASH//[^a-zA-Z0-9\-]/}"
+        VERSION="branch-$SANITIZED"
+      fi
+      if [ ! -z "${IMAGE_TAG:-}" ]; then
+        IMAGE_TAG="${CI_REGISTRY_IMAGE:-}:$VERSION"
+      fi
+    - echo "IMAGE_TAG=$IMAGE_TAG" | tee -a ./.env
+    - echo "IMAGE_VERSION=$VERSION" | tee -a ./.env
+  script:
+    # Load variables from before_script
+    - . ./.env
+    - SOUVAP_IMAGE_TAG="${SOUVAP_REGISTRY_REPO}/${SOUVAP_IMAGE_NAME}:${IMAGE_VERSION}"
+    - echo "logging in with CI_JOB_TOKEN"
+    - echo "${CI_JOB_TOKEN}" | docker login --username "${CI_REGISTRY_USER}" --password-stdin "${CI_REGISTRY}"
+    - 'echo "pulling image: ${IMAGE_TAG}"'
+    - docker pull "${IMAGE_TAG}"
+    - 'echo "tagging image: ${SOUVAP_IMAGE_TAG}"'
+    - docker tag "${IMAGE_TAG}" "${SOUVAP_IMAGE_TAG}"
+    # Use SouvAP-Repo-Access-Token to push image
+    - >
+      echo "${SOUVAP_DOCKER_ACCESS_TOKEN}" |
+      docker login --username "${SOUVAP_DOCKER_ACCESS_USER}" --password-stdin "${SOUVAP_REGISTRY_HOST}"
+    - docker push "${SOUVAP_IMAGE_TAG}"
+
 
 pre-commit:
   stage: lint
+  needs: []
   image:
     name: "gitregistry.knut.univention.de/univention/customers/dataport/upx/container-pre-commit/upx-pre-commit:latest"
     entrypoint: [""]
@@ -12,3 +85,30 @@ pre-commit:
   script:
     - git config --global --add safe.directory /builds/univention/customers/dataport/upx/pocs/self-service-api
     - pre-commit run --all-files
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+
+build-self-service-api:
+  stage: build
+  extends: .kaniko
+  needs: []
+  variables:
+    KANIKO_BUILD_CONTEXT: "src"
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-api"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+
+build-self-service-opa:
+  stage: build
+  extends: .kaniko
+  needs: []
+  variables:
+    KANIKO_BUILD_CONTEXT: "opa"
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-opa"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH

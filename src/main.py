@@ -1,13 +1,15 @@
 import logging
 
 from fastapi import FastAPI
-import uvicorn.config
+from uvicorn.config import LOGGING_CONFIG
 
 from routers import passwordreset
 
 
+LOGGING_CONFIG["formatters"]["default"]["fmt"] = "%(asctime)s [%(name)s] %(levelname)s %(message)s"
+
 logging.basicConfig(
-    format="%(levelprefix)s %(message)s",
+    format="%(asctime)s [%(name)s] %(levelname)s %(message)s",
     level=logging.DEBUG
 )
 

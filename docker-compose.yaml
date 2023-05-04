@@ -5,11 +5,21 @@ services:
     image: openpolicyagent/opa:0.51.0
     container_name: self-service-opa
     restart: unless-stopped
-    command: run --server --log-level debug
+    command: run --server --log-level debug --format pretty --watch /bundles
     volumes:
-      - ./opa/policies:/policies
+      - ./opa:/bundles
     ports:
       - 8181:8181
+
+  opa-test:
+    profiles:
+      - test
+    image: openpolicyagent/opa:0.51.0
+    container_name: self-service-opa
+    restart: unless-stopped
+    command: test --format pretty /bundles
+    volumes:
+      - ./opa:/bundles
 
   self-service-api:
     image: self-service-api:latest
@@ -25,6 +35,7 @@ services:
       - 8098:8000
     environment:
       UCS_BASE_URL: "${UCS_BASE_URL}"
+      OPA_URL: "${OPA_URL}"
 
   portal-server:
     platform: "linux/amd64"

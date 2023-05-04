@@ -1,0 +1,14 @@
+{
+  "config": {
+    "writeable_keys": [
+      "jpegPhoto",
+      "e-mail",
+      "phone",
+      "departmentNumber",
+      "country",
+      "homeTelephoneNumber",
+      "mobileTelephoneNumber",
+      "homePostalAddress"
+    ]
+  }
+}

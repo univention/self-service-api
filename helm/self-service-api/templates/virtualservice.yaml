@@ -1,0 +1,33 @@
+{{- if and .Values.istio.enabled .Values.istio.virtualService.enabled -}}
+---
+
+apiVersion: "networking.istio.io/v1beta1"
+kind: "VirtualService"
+metadata:
+  name: {{ include "self-service-api.fullname" . | quote }}
+  labels:
+    {{- include "self-service-api.labels" . | nindent 4 }}
+  {{- with .Values.istio.virtualService.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  hosts:
+    - {{ required "The hostname has to be set in \"istio.host\"." .Values.istio.host | quote }}
+  gateways:
+    - {{ .Values.istio.gateway.externalGatewayName | default (printf "%s-%s" (include "self-service-api.fullname" .) "-gateway") }}
+  http:
+    - match:
+        - uri:
+            prefix: {{ .Values.self_service_api.url_prefix | quote }}
+      route:
+        - destination:
+            port:
+              number: {{ .Values.service.port }}
+            host: {{ include "self-service-api.fullname" . | quote }}
+      headers:
+        request:
+          set:
+            x-forwarded-host: "{{ .Values.istio.host }}"
+...
+{{- end }}

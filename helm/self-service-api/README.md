@@ -156,16 +156,16 @@ false
 false
 </pre>
 </td>
-			<td></td>
+			<td>Set this to `true` in order to enable the installation on Ingress related objects.</td>
 		</tr>
 		<tr>
 			<td>ingress.host</td>
 			<td>string</td>
 			<td><pre lang="json">
-"portal.example"
+null
 </pre>
 </td>
-			<td></td>
+			<td>The hostname. This parameter has to be supplied. Example `portal.example`.</td>
 		</tr>
 		<tr>
 			<td>ingress.paths[0].path</td>
@@ -199,6 +199,105 @@ true
 			<td>string</td>
 			<td><pre lang="json">
 ""
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Set this to `true` in order to enable the installation on Istio related objects.</td>
+		</tr>
+		<tr>
+			<td>istio.gateway.annotations</td>
+			<td>string</td>
+			<td><pre lang="json">
+null
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.gateway.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.gateway.externalGatewayName</td>
+			<td>string</td>
+			<td><pre lang="json">
+"swp-istio-gateway"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.gateway.selectorIstio</td>
+			<td>string</td>
+			<td><pre lang="json">
+"ingressgateway"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.gateway.tls.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.gateway.tls.httpsRedirect</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.gateway.tls.secretName</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.host</td>
+			<td>string</td>
+			<td><pre lang="json">
+null
+</pre>
+</td>
+			<td>The hostname. This parameter has to be supplied. Example `portal.example`.</td>
+		</tr>
+		<tr>
+			<td>istio.virtualService.annotations</td>
+			<td>string</td>
+			<td><pre lang="json">
+null
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>istio.virtualService.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
 </pre>
 </td>
 			<td></td>
@@ -282,7 +381,7 @@ true
 "http://self-service-opa"
 </pre>
 </td>
-			<td></td>
+			<td>Where to reach the OPA</td>
 		</tr>
 		<tr>
 			<td>self_service_api.ucs_base_url</td>
@@ -291,7 +390,16 @@ true
 "http://univention-corporate-server"
 </pre>
 </td>
-			<td></td>
+			<td>Where to reach the UCS machine</td>
+		</tr>
+		<tr>
+			<td>self_service_api.url_prefix</td>
+			<td>string</td>
+			<td><pre lang="json">
+"/univention/command/passwordreset/"
+</pre>
+</td>
+			<td>The URL prefix which this service has to grab</td>
 		</tr>
 		<tr>
 			<td>service.port</td>

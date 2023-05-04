@@ -87,7 +87,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td>image.imagePullPolicy</td>
+			<td>image.pullPolicy</td>
 			<td>string</td>
 			<td><pre lang="json">
 "Always"
@@ -366,6 +366,15 @@ true
 			<td></td>
 		</tr>
 		<tr>
+			<td>self_service_api.auth_secret</td>
+			<td>string</td>
+			<td><pre lang="json">
+null
+</pre>
+</td>
+			<td>Define Basic auth password with the UMC. Example: `"univention"`</td>
+		</tr>
+		<tr>
 			<td>self_service_api.environment</td>
 			<td>string</td>
 			<td><pre lang="json">
@@ -391,6 +400,15 @@ true
 </pre>
 </td>
 			<td>Where to reach the UCS machine</td>
+		</tr>
+		<tr>
+			<td>self_service_api.ucs_selfservice_prefix</td>
+			<td>string</td>
+			<td><pre lang="json">
+"http://univention-corporate-server/univention/internal/umc/"
+</pre>
+</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>self_service_api.url_prefix</td>

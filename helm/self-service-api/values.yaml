@@ -8,15 +8,23 @@ self_service_api:
   environment: "staging"
   # -- Where to reach the OPA
   opa_url: "http://self-service-opa"
+
+  # TODO: consolidate
   # -- Where to reach the UCS machine
   ucs_base_url: "http://univention-corporate-server"
+  ucs_selfservice_prefix: "http://univention-corporate-server/univention/internal/umc/"
+
+  # -- Define Basic auth password with the UMC.
+  # Example: `"univention"`
+  auth_secret: null
+
   # -- The URL prefix which this service has to grab
   url_prefix: "/univention/command/passwordreset/"
 
 image:
   registry: "registry.souvap-univention.de"
   repository: "souvap/tooling/images/self-service-api/self-service-api"
-  imagePullPolicy: "Always"
+  pullPolicy: "Always"
   tag: "latest"
 
 imagePullSecrets: []

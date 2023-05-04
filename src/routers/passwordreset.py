@@ -28,11 +28,12 @@ router = APIRouter(
 
 
 @router.post("/get_user_attributes_values")
-async def get_user_attributes_values(request: Request, response: Response, opa_client: Any = Depends(get_opa)):
+async def get_user_attributes_values(
+        request: Request, response: Response, opa_client: Any = Depends(get_opa)):
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} if request.headers.get(
-        "x-xsrf-protection") else {}
+    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
+        if request.headers.get("x-xsrf-protection") else {}
 
     async with aiohttp.ClientSession(cookies=cookies) as session:
         url = urljoin(settings.ucs_selfservice_prefix,
@@ -52,11 +53,13 @@ async def get_user_attributes_values(request: Request, response: Response, opa_c
 
 
 @router.post("/get_user_attributes_descriptions")
-async def get_user_attributes_descriptions(request: Request, response: Response, opa_client: Any = Depends(get_opa)) -> Any:
+async def get_user_attributes_descriptions(
+        request: Request, response: Response,
+        opa_client: Any = Depends(get_opa)) -> Any:
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} if request.headers.get(
-        "x-xsrf-protection") else {}
+    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
+        if request.headers.get("x-xsrf-protection") else {}
 
     async with aiohttp.ClientSession(cookies=cookies) as session:
         url = urljoin(settings.ucs_selfservice_prefix,
@@ -76,11 +79,11 @@ async def get_user_attributes_descriptions(request: Request, response: Response,
 
 
 @router.post("/{command}")
-async def get_user_attributes_descriptions(request: Request, response: Response, command) -> Any:
+async def command(request: Request, response: Response, command) -> Any:
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} if request.headers.get(
-        "x-xsrf-protection") else {}
+    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
+        if request.headers.get("x-xsrf-protection") else {}
 
     async with aiohttp.ClientSession(cookies=cookies) as session:
         url = urljoin(settings.ucs_selfservice_prefix,

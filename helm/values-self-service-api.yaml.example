@@ -14,13 +14,13 @@ self_service_api:
 ## Kubernetes ingress
 ingress:
   enabled: false
-  host: "self-service-api.example.develop.souvap-univention.de"
+  host: "portal.example.develop.souvap-univention.de"
 
 
 ## Istio based
 istio:
   enabled: true
-  host: "self-service-api.example.develop.souvap-univention.de"
+  host: "portal.example.develop.souvap-univention.de"
 
 
 ## Docker image

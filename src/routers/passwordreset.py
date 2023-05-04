@@ -10,7 +10,9 @@ from pydantic import BaseSettings
 from opa import get_opa
 
 
+# TODO: move settings into separate module
 class Settings(BaseSettings):
+    ucs_internal_auth_secret: str = "univention"
     ucs_host: str = os.environ.get("UCS_BASE_URL")
     ucs_selfservice_prefix: str = urljoin(
         ucs_host, "/univention/command/passwordreset/")
@@ -21,14 +23,13 @@ settings = Settings()
 logger = logging.getLogger(__name__)
 
 
-logger.info("Using ucs_host %s", settings.ucs_host)
-logger.info("Using ucs_selfservice_prefix %s", settings.ucs_selfservice_prefix)
-
-
 router = APIRouter(
     prefix="/univention/command/passwordreset",
     tags=["passwordreset", "univention", "umc"],
 )
+
+
+auth = aiohttp.BasicAuth("portal-server", settings.ucs_internal_auth_secret)
 
 
 @router.post("/get_user_attributes_values")
@@ -41,7 +42,7 @@ async def get_user_attributes_values(
 
     logger.debug("Request to get_user_attributes_values")
 
-    async with aiohttp.ClientSession(cookies=cookies) as session:
+    async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
         url = urljoin(settings.ucs_selfservice_prefix,
                       "get_user_attributes_values")
         logger.debug("Forwarding to %s", url)
@@ -74,7 +75,7 @@ async def get_user_attributes_descriptions(
 
     logger.debug("Request to get_user_attributes_descriptions")
 
-    async with aiohttp.ClientSession(cookies=cookies) as session:
+    async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
         url = urljoin(settings.ucs_selfservice_prefix,
                       "get_user_attributes_descriptions")
         logger.debug("Forwarding to %s", url)
@@ -106,7 +107,7 @@ async def command(request: Request, response: Response, command) -> Any:
 
     logger.debug("Request to %s", command)
 
-    async with aiohttp.ClientSession(cookies=cookies) as session:
+    async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
         url = urljoin(settings.ucs_selfservice_prefix,
                       command)
         logger.debug("Forwarding request to %s", url)

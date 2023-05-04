@@ -3,6 +3,7 @@ import os
 from opa_client.client import OPAClient
 
 
+# TODO: use settings instead
 # where to reach the OPA
 opa_url = os.environ.get("OPA_URL")
 assert opa_url is not None

@@ -1,0 +1,39 @@
+---
+
+# Dummy values for running the Helm linter on the self-service-api.
+# Run it like this: helm lint -f values.yaml -f linter_values.yaml .
+
+
+## Application-specific
+self_service_api:
+  log_level: "debug"
+  opa_url: "http://self-service-opa"
+  ucs_base_url: "http://univention-corporate-server"
+
+
+## Kubernetes ingress
+ingress:
+  enabled: false
+  host: "self-service-api.example.develop.souvap-univention.de"
+
+
+## Istio based
+istio:
+  enabled: true
+  host: "self-service-api.example.develop.souvap-univention.de"
+
+
+## Docker image
+image:
+  tag: "branch-feature-example"
+
+
+## Container deployment probes
+probes:
+  liveness:
+    enabled: false
+
+  readiness:
+    enabled: false
+
+...

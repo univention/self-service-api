@@ -8,5 +8,7 @@ data:
   ENVIRONMENT: "{{ .Values.self_service_api.environment }}"
   OPA_URL: "{{ .Values.self_service_api.opa_url }}"
   UCS_BASE_URL: "{{ .Values.self_service_api.ucs_base_url }}"
+  UCS_SELFSERVICE_BASE_URL: "{{ .Values.self_service_api.ucs_selfservice_base_url }}"
+  UCS_INTERNAL_AUTH_SECRET: "{{ .Values.self_service_api.auth_secret }}"
 
 ...

@@ -90,7 +90,16 @@ false
 			<td>image.pullPolicy</td>
 			<td>string</td>
 			<td><pre lang="json">
-"IfNotPresent"
+"Always"
+</pre>
+</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>image.registry</td>
+			<td>string</td>
+			<td><pre lang="json">
+"registry.souvap-univention.de"
 </pre>
 </td>
 			<td></td>
@@ -99,7 +108,7 @@ false
 			<td>image.repository</td>
 			<td>string</td>
 			<td><pre lang="json">
-"openpolicyagent/opa"
+"souvap/tooling/images/self-service-api/self-service-opa"
 </pre>
 </td>
 			<td></td>
@@ -108,7 +117,7 @@ false
 			<td>image.tag</td>
 			<td>string</td>
 			<td><pre lang="json">
-""
+"latest"
 </pre>
 </td>
 			<td></td>

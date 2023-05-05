@@ -35,7 +35,7 @@ services:
     ports:
       - 8098:8000
     environment:
-      UCS_BASE_URL: "${UCS_BASE_URL}"
+      UCS_SELFSERVICE_BASE_URL: "${UCS_SELFSERVICE_BASE_URL}"
       OPA_URL: "${OPA_URL}"
 
   portal-server:

@@ -1,8 +1,104 @@
+# Access token requirements
+#
+# This pipeline needs some access tokens configured via the Gitlab UI.
+#
+# - `SOUVAP_HELM_ACCESS_TOKEN` - The token needs api access in its scope and is
+#   used to publish the helm packages.
+#
+# - `SOUVAP_DOCKER_ACCESS_TOKEN` - The token needs container registry access
+#   and is used to publish the container images.
+
+
+variables:
+  SOUVAP_API_V4_URL: https://gitlab.souvap-univention.de/api/v4
+  SOUVAP_DOCKER_ACCESS_USER: gitlab-ci-knut
+  SOUVAP_HELM_ACCESS_USER: gitlab-ci-knut
+  SOUVAP_HELM_PROJECT_ID: 108
+  SOUVAP_REGISTRY_HOST: registry.souvap-univention.de
+  SOUVAP_REGISTRY_PATH: souvap/tooling/images/self-service-api
+  SOUVAP_REGISTRY_REPO: ${SOUVAP_REGISTRY_HOST}/${SOUVAP_REGISTRY_PATH}
+
+
 stages:
   - lint
+  - build
+  - package
+  - publish
+
+
+# TODO: The workflow setup is duplicated from the univention-portal. Aim for a
+# commons repository and inherit these things.
+
+# This workflow rule prevents duplicate pipelines when pushing to branches that
+# already have a merge request open. Our integration branch "develop" is an
+# explicit exception and shall always trigger.
+#
+# The rules are applied in order, the first matching one decides.
+#
+# Compare https://docs.gitlab.com/ee/ci/yaml/#rules
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+
+include:
+  - project: univention/dist/docker-services
+    file: kaniko.yml
+
+
+# TODO: Duplication with univention-portal repository. Provide in a common
+# repository, so that this can be used from various microservices.
+.push-image-souvap:
+  variables:
+    GIT_STRATEGY: none
+  image: artifacts.knut.univention.de/dockerhub_proxy_cache/library/docker:20.10.12
+  services:
+  - name: docker-registry.knut.univention.de/ucs/docker:dind
+    alias: docker
+  before_script:
+    # derived from the .kaniko_pre to define the IMAGE_TAG and IMAGE_VERSION
+    - |-
+      if [ "${CI_COMMIT_REF_NAME:-}" = "${CI_DEFAULT_BRANCH:-}" ]; then
+        VERSION="latest"
+      elif [ -n "${CI_COMMIT_TAG:-}" ]; then
+        NOSLASH=$(echo "${CI_COMMIT_TAG:-}" | tr -s / -)
+        SANITIZED="${NOSLASH//[^a-zA-Z0-9\-\.]/}"
+        VERSION="$SANITIZED"
+      else
+        NOSLASH=$(echo "${CI_COMMIT_REF_NAME:-}" | tr -s / -)
+        SANITIZED="${NOSLASH//[^a-zA-Z0-9\-]/}"
+        VERSION="branch-$SANITIZED"
+      fi
+      if [ ! -z "${IMAGE_TAG:-}" ]; then
+        IMAGE_TAG="${CI_REGISTRY_IMAGE:-}:$VERSION"
+      fi
+    - echo "IMAGE_TAG=$IMAGE_TAG" | tee -a ./.env
+    - echo "IMAGE_VERSION=$VERSION" | tee -a ./.env
+  script:
+    # Load variables from before_script
+    - . ./.env
+    - SOUVAP_IMAGE_TAG="${SOUVAP_REGISTRY_REPO}/${SOUVAP_IMAGE_NAME}:${IMAGE_VERSION}"
+    - echo "logging in with CI_JOB_TOKEN"
+    - echo "${CI_JOB_TOKEN}" | docker login --username "${CI_REGISTRY_USER}" --password-stdin "${CI_REGISTRY}"
+    - 'echo "pulling image: ${IMAGE_TAG}"'
+    - docker pull "${IMAGE_TAG}"
+    - 'echo "tagging image: ${SOUVAP_IMAGE_TAG}"'
+    - docker tag "${IMAGE_TAG}" "${SOUVAP_IMAGE_TAG}"
+    # Use SouvAP-Repo-Access-Token to push image
+    - >
+      echo "${SOUVAP_DOCKER_ACCESS_TOKEN}" |
+      docker login --username "${SOUVAP_DOCKER_ACCESS_USER}" --password-stdin "${SOUVAP_REGISTRY_HOST}"
+    - docker push "${SOUVAP_IMAGE_TAG}"
+
 
 pre-commit:
   stage: lint
+  needs: []
   image:
     name: "gitregistry.knut.univention.de/univention/customers/dataport/upx/container-pre-commit/upx-pre-commit:latest"
     entrypoint: [""]
@@ -12,3 +108,102 @@ pre-commit:
   script:
     - git config --global --add safe.directory /builds/univention/customers/dataport/upx/pocs/self-service-api
     - pre-commit run --all-files
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+
+build-self-service-api:
+  stage: build
+  extends: .kaniko
+  needs: []
+  variables:
+    KANIKO_BUILD_CONTEXT: "src"
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-api"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+
+push-image-souvap-self-service-api:
+  stage: publish
+  needs:
+    - job: build-self-service-api
+  extends: .push-image-souvap
+  variables:
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-api"
+    SOUVAP_IMAGE_NAME: "self-service-api"
+
+
+build-self-service-opa:
+  stage: build
+  extends: .kaniko
+  needs: []
+  variables:
+    KANIKO_BUILD_CONTEXT: "opa"
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-opa"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+
+push-image-souvap-self-service-opa:
+  stage: publish
+  needs:
+    - job: build-self-service-opa
+  extends: .push-image-souvap
+  variables:
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-opa"
+    SOUVAP_IMAGE_NAME: "self-service-opa"
+
+package-helm-charts:
+  stage: "package"
+  # TODO: Activate after confirming that this works
+  # only:
+  #   - "main"
+  needs: []
+  artifacts:
+    paths:
+      - "packages/*.tgz"
+  image:
+    name: "${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine/helm:3.10.2"
+    entrypoint: [""]
+  script:
+    - "if [ -z \"${RELEASE_VERSION}\" ]; then exit 0; fi"
+    - |
+      for helm_path in `find ./helm -mindepth 1 -maxdepth 1 -type d`; do
+        helm_dir=$(basename "${helm_path}")
+        echo "Packaging helm-chart ${helm_dir}"
+        helm package --version "${RELEASE_VERSION}" --destination "./packages" --dependency-update "helm/${helm_dir}"
+      done
+  variables:
+    # TODO: Extract the release information from Git.
+    # Compare: https://gitlab.souvap-univention.de/souvap/tooling/charts/openproject-helm-chart/-/blob/souvap/.gitlab-ci.yml#L25
+    RELEASE_VERSION: "0.0.0"
+
+
+publish-helm-charts:
+  stage: "publish"
+  # TODO: Activate after confirming that this works
+  # only:
+  #   - "main"
+  dependencies:
+    - "package-helm-charts"
+  needs:
+    - "package-helm-charts"
+  image: "${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/curlimages/curl:latest"
+  script:
+    - "if [ -z \"${RELEASE_VERSION}\" ]; then exit 0; fi"
+    - |
+      for _filename in `find packages -type f`; do
+        curl \
+        --request "POST" \
+        --user "${SOUVAP_HELM_ACCESS_USER}:${SOUVAP_HELM_ACCESS_TOKEN}" \
+        --form "chart=@$_filename" \
+        "${SOUVAP_API_V4_URL}/projects/${SOUVAP_HELM_PROJECT_ID}/packages/helm/api/stable/charts";
+      done
+  variables:
+    GIT_STRATEGY: "none"
+    # TODO: Extract the release information from Git.
+    # Compare: https://gitlab.souvap-univention.de/souvap/tooling/charts/openproject-helm-chart/-/blob/souvap/.gitlab-ci.yml#L25
+    RELEASE_VERSION: "0.0.0"

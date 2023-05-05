@@ -48,6 +48,21 @@ repos:
         stages: [ manual ]
         args: ["-i"]
 
+  # "OPA Rego policies"
+  - repo: https://github.com/anderseknert/pre-commit-opa
+    rev: v1.5.1
+    hooks:
+    - id: opa-fmt
+      alias: "opa-fmt-fix"
+      stages: ["manual"]
+      args: ["opa/", "--write"]
+    - id: opa-fmt
+      args: ["opa/", "--fail"]
+    - id: opa-check
+      args: ['opa/', "--strict"]
+    - id: opa-test
+      args: ['opa/']
+
   # "docker-compose.yaml linter"
   # - repo: https://gitlab.com/univention/pre-commit-hooks/docker-compose-check
   #   rev: 7702a8801a158b8595569dd29e2dd655d8a08310

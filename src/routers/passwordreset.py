@@ -1,24 +1,13 @@
 import logging
-import os
-from typing import Any
 from urllib.parse import urljoin
+from typing import Any
 
 import aiohttp
 from fastapi import APIRouter, Request, Response, Depends
-from pydantic import BaseSettings
 
+from config import settings
 from opa import get_opa
 
-
-# TODO: move settings into separate module
-class Settings(BaseSettings):
-    ucs_internal_auth_secret: str = "univention"
-    ucs_host: str = os.environ.get("UCS_BASE_URL")
-    ucs_selfservice_prefix: str = urljoin(
-        ucs_host, "/univention/command/passwordreset/")
-
-
-settings = Settings()
 
 logger = logging.getLogger(__name__)
 

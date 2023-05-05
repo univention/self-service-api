@@ -3,6 +3,7 @@ import logging
 from fastapi import FastAPI
 from uvicorn.config import LOGGING_CONFIG
 
+from config import log_configuration_details
 from routers import passwordreset
 
 
@@ -16,10 +17,7 @@ logging.basicConfig(
     level=logging.DEBUG
 )
 
-
-logger.info("Using ucs_host %s", passwordreset.settings.ucs_host)
-logger.info(
-    "Using ucs_selfservice_prefix %s", passwordreset.settings.ucs_selfservice_prefix)
+log_configuration_details()
 
 
 app = FastAPI()

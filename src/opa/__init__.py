@@ -1,16 +1,10 @@
-import os
-
 from opa_client.client import OPAClient
 
-
-# TODO: use settings instead
-# where to reach the OPA
-opa_url = os.environ.get("OPA_URL")
-assert opa_url is not None
+from config import settings
 
 
 async def get_opa():
-    opa_client = OPAClient(opa_url=opa_url, log_queries=True)
+    opa_client = OPAClient(opa_url=settings.opa_url, log_queries=True)
     try:
         yield opa_client
     finally:

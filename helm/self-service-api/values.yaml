@@ -9,10 +9,8 @@ self_service_api:
   # -- Where to reach the OPA
   opa_url: "http://self-service-opa"
 
-  # TODO: consolidate
-  # -- Where to reach the UCS machine
-  ucs_base_url: "http://univention-corporate-server"
-  ucs_selfservice_prefix: "http://univention-corporate-server/univention/internal/umc/"
+  # -- Where to reach the UMC selfservice
+  ucs_selfservice_base_url: "http://univention-corporate-server/univention/internal/umc/"
 
   # -- Define Basic auth password with the UMC.
   # Example: `"univention"`

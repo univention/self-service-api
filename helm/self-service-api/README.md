@@ -393,22 +393,13 @@ null
 			<td>Where to reach the OPA</td>
 		</tr>
 		<tr>
-			<td>self_service_api.ucs_base_url</td>
-			<td>string</td>
-			<td><pre lang="json">
-"http://univention-corporate-server"
-</pre>
-</td>
-			<td>Where to reach the UCS machine</td>
-		</tr>
-		<tr>
-			<td>self_service_api.ucs_selfservice_prefix</td>
+			<td>self_service_api.ucs_selfservice_base_url</td>
 			<td>string</td>
 			<td><pre lang="json">
 "http://univention-corporate-server/univention/internal/umc/"
 </pre>
 </td>
-			<td></td>
+			<td>Where to reach the UMC selfservice</td>
 		</tr>
 		<tr>
 			<td>self_service_api.url_prefix</td>

@@ -18,7 +18,8 @@ router = APIRouter(
 )
 
 
-auth = aiohttp.BasicAuth("portal-server", settings.ucs_internal_auth_secret.get_secret_value())
+auth = aiohttp.BasicAuth(
+    "portal-server", settings.ucs_internal_auth_secret.get_secret_value())
 
 
 @router.post("/get_user_attributes_values")
@@ -32,7 +33,7 @@ async def get_user_attributes_values(
     logger.debug("Request to get_user_attributes_values")
 
     async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
-        url = urljoin(settings.ucs_selfservice_prefix,
+        url = urljoin(settings.ucs_selfservice_base_url,
                       "get_user_attributes_values")
         logger.debug("Forwarding to %s", url)
 
@@ -65,7 +66,7 @@ async def get_user_attributes_descriptions(
     logger.debug("Request to get_user_attributes_descriptions")
 
     async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
-        url = urljoin(settings.ucs_selfservice_prefix,
+        url = urljoin(settings.ucs_selfservice_base_url,
                       "get_user_attributes_descriptions")
         logger.debug("Forwarding to %s", url)
 
@@ -97,7 +98,7 @@ async def command(request: Request, response: Response, command) -> Any:
     logger.debug("Request to %s", command)
 
     async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
-        url = urljoin(settings.ucs_selfservice_prefix,
+        url = urljoin(settings.ucs_selfservice_base_url,
                       command)
         logger.debug("Forwarding request to %s", url)
 

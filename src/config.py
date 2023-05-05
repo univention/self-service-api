@@ -1,20 +1,15 @@
 import logging
-import os
-from urllib.parse import urljoin
 
-from pydantic import BaseSettings, SecretStr
+from pydantic import BaseSettings, Field, SecretStr
 
 
 logger = logging.getLogger(__name__)
 
 
 class Settings(BaseSettings):
-    opa_url: str = ...
+    opa_url: str = Field(...)
     ucs_internal_auth_secret: SecretStr = "univention"
-    ucs_host: str = os.environ.get("UCS_BASE_URL")
-    ucs_selfservice_prefix: str = urljoin(
-        ucs_host, "/univention/command/passwordreset/")
-
+    ucs_selfservice_base_url: str = Field(...)
 
 settings = Settings()
 

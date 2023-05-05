@@ -2,6 +2,15 @@
   "config": {
     "writeable_keys": [
       "jpegPhoto",
+      "phone",
+      "departmentNumber",
+      "country",
+      "homeTelephoneNumber",
+      "mobileTelephoneNumber",
+      "homePostalAddress"
+    ],
+    "readable_keys": [
+      "jpegPhoto",
       "e-mail",
       "phone",
       "departmentNumber",

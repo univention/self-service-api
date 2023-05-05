@@ -8,8 +8,10 @@
 ## Application-specific
 self_service_api:
   environment: "staging"
-  ucs_base_url: "http://ucs-machine"
-
+  opa_url: "http://self-service-opa"
+  ucs_selfservice_base_url: "http://univention-corporate-server/univention/internal/umc/"
+  auth_secret: "example-secret"
+  url_prefix: "/univention/command/passwordreset/"
 
 ## Kubernetes ingress
 ingress:

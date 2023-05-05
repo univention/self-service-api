@@ -18,7 +18,7 @@ router = APIRouter(
 )
 
 
-auth = aiohttp.BasicAuth("portal-server", settings.ucs_internal_auth_secret)
+auth = aiohttp.BasicAuth("portal-server", settings.ucs_internal_auth_secret.get_secret_value())
 
 
 @router.post("/get_user_attributes_values")

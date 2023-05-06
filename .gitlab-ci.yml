@@ -49,6 +49,8 @@ workflow:
 include:
   - project: univention/dist/docker-services
     file: kaniko.yml
+  - project: univention/customers/dataport/upx/common-ci
+    file: jobs/package-and-publish-helm-charts.yaml
 
 
 # TODO: Duplication with univention-portal repository. Provide in a common

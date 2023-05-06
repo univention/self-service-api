@@ -163,11 +163,9 @@ push-image-souvap-self-service-opa:
     CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-opa"
     SOUVAP_IMAGE_NAME: "self-service-opa"
 
+
 package-helm-charts:
   stage: "package"
-  # TODO: Activate after confirming that this works
-  # only:
-  #   - "main"
   needs: []
   artifacts:
     paths:
@@ -183,15 +181,18 @@ package-helm-charts:
 
         RELEASE_VERSION=$(helm show chart "${helm_path}" | grep "^version:" | sed "s/^version: //")
 
+        # Flag release as pre-release if not on default branch
+        if [ "${CI_COMMIT_REF_NAME:-}" != "${CI_DEFAULT_BRANCH:-}" ]; then
+          RELEASE_VERSION="${RELEASE_VERSION}-pre-${CI_COMMIT_REF_SLUG}"
+        fi
+        echo "Release version set to: '${RELEASE_VERSION}'."
+
         helm package --version "${RELEASE_VERSION}" --destination "./packages" --dependency-update "helm/${helm_dir}"
       done
 
 
 publish-helm-charts:
   stage: "publish"
-  # TODO: Activate after confirming that this works
-  # only:
-  #   - "main"
   dependencies:
     - "package-helm-charts"
   needs:

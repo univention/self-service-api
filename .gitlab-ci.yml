@@ -99,9 +99,6 @@ pre-commit:
   script:
     - git config --global --add safe.directory /builds/univention/customers/dataport/upx/pocs/self-service-api
     - pre-commit run --all-files
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH
 
 
 build-self-service-api:
@@ -111,9 +108,6 @@ build-self-service-api:
   variables:
     KANIKO_BUILD_CONTEXT: "src"
     CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-api"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH
 
 
 push-image-souvap-self-service-api:
@@ -133,9 +127,6 @@ build-self-service-opa:
   variables:
     KANIKO_BUILD_CONTEXT: "opa"
     CI_REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE/self-service-opa"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH
 
 
 push-image-souvap-self-service-opa:

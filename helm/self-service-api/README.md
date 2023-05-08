@@ -22,6 +22,12 @@ TODO: complete once the repos on gitlab.souvap-univention.de are ready!
 
 TODO: complete once the repos on gitlab.souvap-univention.de are ready!
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.bitnami.com/bitnami | common | ^2.2.2 |
+
 ## Values
 
 <table>

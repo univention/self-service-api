@@ -37,6 +37,15 @@ include:
       - jobs/package-and-publish-helm-charts.yaml
 
 
+pre-commit:
+  before_script:
+    # Helm chart liniting needs the dependency charts present
+    - |
+      for helm_path in `find ./helm -mindepth 1 -maxdepth 1 -type d`; do
+        helm dependency update $helm_path
+      done
+
+
 build-self-service-api:
   stage: build
   extends: .kaniko

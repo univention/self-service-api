@@ -23,10 +23,8 @@ To get started, follow this steps:
       in your `docker-compose.override.yaml`
       based on ``docker-compose.override.yaml.example`.
 4. Use `docker compose up -d --build` to bring the setup up.
-5. Fetch Keycloak's key set and store it in `data.json`:
-   ```sh
-   ./fetch-jwks.sh > opa/auth/data.json
-   ```
+5. The OPA container will automatically grab the keys
+   from the configured Keycloak instance on startup.
 
 ## Test OPA policies
 

@@ -103,7 +103,7 @@ services:
       KC_PROXY: "edge"
       KEYCLOAK_LOGLEVEL: "ALL"
       ROOT_LOGLEVEL: "ALL"
-      # override the following values in .env
+      # override the following values in docker-compose.override.yaml
       LDAP_BASE: "dc=univention,dc=intranet"
       LDAP_SECRET: "YOUR CONTENT OF /etc/idp-ldap-user.secret"
       LDAP_SERVER: "ldap://UCS_IP:7389"

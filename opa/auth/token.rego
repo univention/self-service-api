@@ -14,7 +14,6 @@ import data.auth.jwks
 # returns: true/false
 default token_valid := false
 token_valid := true if {
-    # valid := io.jwt.verify_rs256(input.token, jwks)
     [valid, _, _] := io.jwt.decode_verify(
         input["token"],
         {

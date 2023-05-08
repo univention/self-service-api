@@ -3,9 +3,9 @@
 apiVersion: "networking.istio.io/v1alpha3"
 kind: "Gateway"
 metadata:
-  name: {{ printf "%s-%s" (include "self-service-api.fullname" .) "-gateway" }}
+  name: {{ printf "%s-%s" (include "common.names.fullname" .) "-gateway" }}
   labels:
-    {{- include "self-service-api.labels" . | nindent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
   {{- with .Values.istio.virtualService.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

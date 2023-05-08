@@ -1,4 +1,5 @@
 **/__pycache__
 .env
 /docker-compose.override.yaml
+/helm/*/charts/*.tgz
 /helm/values-*.yaml

@@ -4,9 +4,9 @@
 apiVersion: "networking.istio.io/v1beta1"
 kind: "VirtualService"
 metadata:
-  name: {{ include "self-service-api.fullname" . | quote }}
+  name: {{ include "common.names.fullname" . | quote }}
   labels:
-    {{- include "self-service-api.labels" . | nindent 4 }}
+    {{- include "common.labels.standard" . | nindent 4 }}
   {{- with .Values.istio.virtualService.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -15,7 +15,7 @@ spec:
   hosts:
     - {{ required "The hostname has to be set in \"istio.host\"." .Values.istio.host | quote }}
   gateways:
-    - {{ .Values.istio.gateway.externalGatewayName | default (printf "%s-%s" (include "self-service-api.fullname" .) "-gateway") }}
+    - {{ .Values.istio.gateway.externalGatewayName | default (printf "%s-%s" (include "common.names.fullname" .) "-gateway") }}
   http:
     - match:
         - uri:
@@ -24,7 +24,7 @@ spec:
         - destination:
             port:
               number: {{ .Values.service.port }}
-            host: {{ include "self-service-api.fullname" . | quote }}
+            host: {{ include "common.names.fullname" . | quote }}
       headers:
         request:
           set:

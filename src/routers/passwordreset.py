@@ -22,13 +22,22 @@ auth = aiohttp.BasicAuth(
     "portal-server", settings.ucs_internal_auth_secret.get_secret_value())
 
 
+def _filter_umc_headers(request_headers):
+    """
+    Extract all headers which are explicitly set by the frontend when contacting the UMC.
+    """
+    umc_headers = ['accept-language', 'x-requested-with', 'x-xsrf-protection']
+    return {key: request_headers[key]
+            for key in request_headers.keys()
+            if key in umc_headers}
+
+
 @router.post("/get_user_attributes_values")
 async def get_user_attributes_values(
         request: Request, response: Response, opa_client: Any = Depends(get_opa)):
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
-        if request.headers.get("x-xsrf-protection") else {}
+    headers = _filter_umc_headers(request.headers)
 
     logger.debug("Request to get_user_attributes_values")
 
@@ -60,8 +69,7 @@ async def get_user_attributes_descriptions(
         opa_client: Any = Depends(get_opa)) -> Any:
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
-        if request.headers.get("x-xsrf-protection") else {}
+    headers = _filter_umc_headers(request.headers)
 
     logger.debug("Request to get_user_attributes_descriptions")
 
@@ -88,18 +96,74 @@ async def get_user_attributes_descriptions(
             return body
 
 
-@router.post("/{command}")
-async def command(request: Request, response: Response, command) -> Any:
+@router.post("/validate_user_attributes")
+async def validate_user_attributes(
+        request: Request, response: Response,
+        opa_client: Any = Depends(get_opa)) -> Any:
     payload = await request.json()
     cookies = request.cookies
     headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
         if request.headers.get("x-xsrf-protection") else {}
 
-    logger.debug("Request to %s", command)
+    logger.debug("Request to validate_user_attributes")
+
+    logger.debug("Calling OPA")
+    valid_keys = await opa_client.check_policy(
+        policy="/v1/data/self_service/filters/validate_user_attributes",
+        data=payload)
+    logger.debug("Got OPA result")
+
+    payload_keys = payload.get("options", {}).get("attributes", {}).keys()
+    if len(valid_keys) != len(payload_keys):
+        result = {
+            "result": {
+                key: {
+                    "isValid": (key in valid_keys),
+                    "message": "" if (key in valid_keys) else "Invalid",
+                }
+                for key in payload_keys
+            },
+            "message": "{} Fehler aufgetreten".format(len(payload_keys) - len(valid_keys)),
+            "error": "",
+            "reason": "",
+            "status": 200
+        }
+        logger.debug("Returning response from OPA")
+        return result
 
     async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
         url = urljoin(settings.ucs_selfservice_base_url,
-                      command)
+                      "validate_user_attributes")
+        logger.debug("Forwarding request to %s", url)
+
+        async with session.post(url, headers=headers, json=payload) as ucs_response:
+            body = await ucs_response.json()
+            logger.debug("Got response")
+            response.status_code = ucs_response.status
+            for key, value in ucs_response.cookies.items():
+                response.set_cookie(key, value)
+            return body
+
+
+@router.post("/set_user_attributes")
+async def set_user_attributes(
+        request: Request, response: Response,
+        opa_client: Any = Depends(get_opa)) -> Any:
+    payload = await request.json()
+    cookies = request.cookies
+    headers = _filter_umc_headers(request.headers)
+
+    logger.debug("Request to set_user_attributes")
+
+    logger.debug("Calling OPA")
+    payload = await opa_client.check_policy(
+        policy="/v1/data/self_service/filters/set_user_attributes",
+        data=payload)
+    logger.debug("Got OPA result")
+
+    async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
+        url = urljoin(settings.ucs_selfservice_base_url,
+                      "set_user_attributes")
         logger.debug("Forwarding request to %s", url)
 
         async with session.post(url, headers=headers, json=payload) as ucs_response:

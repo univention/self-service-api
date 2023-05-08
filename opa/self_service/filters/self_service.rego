@@ -44,6 +44,19 @@ user_data_attribute_descriptions contains output if {
 	}
 }
 
+validate_user_attributes contains key if {
+	input.options.attributes[key]
+	is_editable(key)
+}
+
+set_user_attributes := {"options": {"attributes": set_user_attributes_inner}}
+
+set_user_attributes_inner[key] := value if {
+	some key
+	value := input.options.attributes[key]
+	is_editable(key)
+}
+
 # Check if an item is editable based on if it can be written
 is_editable(id) = editable if {
 	editable := id in writeable_keys

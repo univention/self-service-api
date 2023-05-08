@@ -105,6 +105,13 @@ pre-commit:
   variables:
     PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
     PRE_COMMIT_HOME: "${CI_PROJECT_DIR}/.cache/pre-commit"
+  cache:
+    key:
+      files:
+        - .pre-commit-config.yaml
+    paths:
+      - "${PIP_CACHE_DIR}"
+      - "${PRE_COMMIT_HOME}"
   script:
     - git config --global --add safe.directory /builds/univention/customers/dataport/upx/pocs/self-service-api
     - pre-commit run --all-files

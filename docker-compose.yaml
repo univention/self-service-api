@@ -18,7 +18,7 @@ services:
     image: openpolicyagent/opa:0.51.0
     container_name: self-service-opa
     restart: unless-stopped
-    command: test --format pretty /bundles
+    command: test --format pretty --verbose /bundles
     volumes:
       - ./opa:/bundles
 

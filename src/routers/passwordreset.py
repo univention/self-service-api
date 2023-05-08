@@ -24,7 +24,7 @@ auth = aiohttp.BasicAuth(
 
 def _filter_umc_headers(request_headers):
     """
-    Extract all headers which are explicitly set by the frontend when contacting the UMC.
+    Extract all headers which the frontend explicitly sets when contacting the UMC.
     """
     umc_headers = ['accept-language', 'x-requested-with', 'x-xsrf-protection']
     return {key: request_headers[key]
@@ -102,34 +102,19 @@ async def validate_user_attributes(
         opa_client: Any = Depends(get_opa)) -> Any:
     payload = await request.json()
     cookies = request.cookies
-    headers = {"x-xsrf-protection": request.headers.get("x-xsrf-protection")} \
-        if request.headers.get("x-xsrf-protection") else {}
+    headers = _filter_umc_headers(request.headers)
 
     logger.debug("Request to validate_user_attributes")
 
     logger.debug("Calling OPA")
-    valid_keys = await opa_client.check_policy(
+    policy_output = await opa_client.check_policy(
         policy="/v1/data/self_service/filters/validate_user_attributes",
         data=payload)
     logger.debug("Got OPA result")
 
-    payload_keys = payload.get("options", {}).get("attributes", {}).keys()
-    if len(valid_keys) != len(payload_keys):
-        result = {
-            "result": {
-                key: {
-                    "isValid": (key in valid_keys),
-                    "message": "" if (key in valid_keys) else "Invalid",
-                }
-                for key in payload_keys
-            },
-            "message": "{} Fehler aufgetreten".format(len(payload_keys) - len(valid_keys)),
-            "error": "",
-            "reason": "",
-            "status": 200
-        }
+    if not all(value["isValid"] for value in policy_output["result"].values()):
         logger.debug("Returning response from OPA")
-        return result
+        return policy_output
 
     async with aiohttp.ClientSession(cookies=cookies, auth=auth) as session:
         url = urljoin(settings.ucs_selfservice_base_url,

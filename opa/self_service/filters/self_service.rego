@@ -44,10 +44,32 @@ user_data_attribute_descriptions contains output if {
 	}
 }
 
-validate_user_attributes contains key if {
-	input.options.attributes[key]
-	is_editable(key)
+validate_user_attributes := {
+	"result": validate_user_attributes_result,
+	"message": sprintf("%d errors occurred", [count(_invalid_user_attributes)]),
+	"error": "",
+	"reason": "",
+	"status": 200,
 }
+
+validate_user_attributes_result[key] := value if {
+	some key
+	input.options.attributes[key]
+
+	value := {
+		"isValid": is_editable(key),
+		"message": _validate_user_attribute_message(is_editable(key)),
+	}
+}
+
+_invalid_user_attributes contains key if {
+	input.options.attributes[key]
+	not is_editable(key)
+}
+
+_validate_user_attribute_message(writable) := "" if writable
+
+_validate_user_attribute_message(writable) := "Not writable" if not writable
 
 set_user_attributes := {"options": {"attributes": set_user_attributes_inner}}
 

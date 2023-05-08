@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     ucs_internal_auth_secret: SecretStr = "univention"
     ucs_selfservice_base_url: str = Field(...)
 
+
 settings = Settings()
 
 
